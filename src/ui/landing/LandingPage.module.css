@@ -1,0 +1,154 @@
+.page {
+  min-height: 100dvh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+}
+
+.sky {
+  position: relative;
+  height: 38vh;
+  min-height: 200px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #2a2550 0%, #6b3a5c 45%, #d9622f 78%, #11151c 100%);
+  overflow: hidden;
+}
+
+.sun {
+  position: absolute;
+  left: 50%;
+  bottom: 16%;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffe9a8 0%, #ff9a4d 55%, rgba(255, 122, 61, 0) 72%);
+  transform: translateX(-50%);
+}
+
+.skyline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 24px;
+}
+
+.bar {
+  width: 26px;
+  background: #11151c;
+  border-radius: 2px 2px 0 0;
+}
+
+.content {
+  flex: 1;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 24px 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.eyebrow {
+  color: var(--color-accent);
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.tagline {
+  color: var(--color-text-dim);
+  font-size: 15px;
+}
+
+.lead {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--color-text-dim);
+  max-width: 480px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.featureItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-panel);
+  text-align: left;
+}
+
+.featureTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.featureDesc {
+  font-size: 12px;
+  color: var(--color-text-dim);
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.primary,
+.secondary {
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.primary {
+  background: var(--color-accent);
+  color: #1a0f08;
+  border-color: var(--color-accent);
+}
+
+.secondary {
+  background: transparent;
+  color: var(--color-text-dim);
+  border-color: var(--color-border);
+}
+
+@media (max-width: 480px) {
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+}
