@@ -1,0 +1,101 @@
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 320px;
+  height: 100dvh;
+  background: #05070a;
+  color: var(--color-text);
+  overflow: hidden;
+}
+
+.left,
+.right {
+  background: var(--color-panel);
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.left {
+  border-right: 1px solid var(--color-border);
+}
+
+.right {
+  border-left: 1px solid var(--color-border);
+}
+
+.center {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 12px;
+}
+
+.canvasWrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.drawerToggleLeft,
+.drawerToggleRight {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .left,
+  .right {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 82vw;
+    max-width: 320px;
+    z-index: 20;
+    transition: transform 0.25s ease;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+  }
+
+  .left {
+    left: 0;
+    transform: translateX(-100%);
+  }
+
+  .right {
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  .left.open,
+  .right.open {
+    transform: translateX(0);
+  }
+
+  .drawerToggleLeft,
+  .drawerToggleRight {
+    display: block;
+    position: fixed;
+    top: 10px;
+    z-index: 30;
+    background: var(--color-panel-alt);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .drawerToggleLeft {
+    left: 10px;
+  }
+
+  .drawerToggleRight {
+    right: 10px;
+  }
+}

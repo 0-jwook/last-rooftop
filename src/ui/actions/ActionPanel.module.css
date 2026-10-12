@@ -1,0 +1,37 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 8px;
+}
+
+.tab {
+  flex: 1;
+  padding: 8px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--color-text-dim);
+  font-size: 13px;
+}
+
+.tab:hover {
+  background: var(--color-panel-alt);
+}
+
+.tabActive {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}

@@ -1,0 +1,65 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-panel-alt);
+  color: var(--color-text);
+  text-align: left;
+}
+
+.item:hover {
+  border-color: var(--color-accent);
+}
+
+.itemSelected {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.itemName {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.itemCost {
+  font-size: 11px;
+  color: var(--color-text-dim);
+}
+
+.placement {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-panel-alt);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--color-text-dim);
+  margin-bottom: 8px;
+}
+
+.cancel {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-dim);
+  font-size: 12px;
+}

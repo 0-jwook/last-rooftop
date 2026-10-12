@@ -1,0 +1,75 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  color: var(--color-text-dim);
+  margin-bottom: 8px;
+}
+
+.resourceList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.resourceList li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+.empty {
+  font-size: 12px;
+  color: var(--color-text-dim);
+}
+
+.facilityList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.facilityItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-panel-alt);
+  gap: 8px;
+}
+
+.facilityName {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+}
+
+.facilityMeta {
+  font-size: 11px;
+  color: var(--color-text-dim);
+}
+
+.facilityActions {
+  display: flex;
+  gap: 6px;
+}
+
+.facilityActions button {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+  font-size: 12px;
+}
+
+.facilityActions button:hover {
+  border-color: var(--color-accent);
+}
