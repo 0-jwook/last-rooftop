@@ -5,11 +5,11 @@ import { clamp, type DomainResult } from './util';
 export const MINUTES_PER_DAY = 1440;
 export const WAKE_MINUTES = 6 * 60;
 
-const HUNGER_RATE_PER_MIN = 100 / 720; // 12시간이면 포만 -> 기아
-const THIRST_RATE_PER_MIN = 100 / 600; // 10시간이면 갈증 최대
-const FATIGUE_RATE_PER_MIN = 100 / 960; // 16시간이면 피로 최대
-const STARVING_HEALTH_LOSS_PER_MIN = 100 / 480;
-const DEHYDRATED_HEALTH_LOSS_PER_MIN = 100 / 360;
+const HUNGER_RATE_PER_MIN = 100 / 1440; // 24시간이면 포만 -> 기아
+const THIRST_RATE_PER_MIN = 100 / 1200; // 20시간이면 갈증 최대
+const FATIGUE_RATE_PER_MIN = 100 / 1080; // 18시간 활동이면 피로 최대
+const STARVING_HEALTH_LOSS_PER_MIN = 100 / 1440; // 완전히 굶은 채 24시간이면 체력 소진
+const DEHYDRATED_HEALTH_LOSS_PER_MIN = 100 / 960; // 완전히 탈수된 채 16시간이면 체력 소진
 const SLEEP_DURATION_MINUTES = 480;
 const SLEEP_FATIGUE_RECOVERY = 90;
 

@@ -4,7 +4,7 @@ import type { FacilityInstance, FacilityState, FacilityType, GameState, GridPosi
 import { pushDiaryEntry } from './diary';
 import { addResources, canAfford, deductResources } from './inventory';
 import { advanceTime, getTimeOfDay } from './time';
-import { clamp, generateId, type DomainResult } from './util';
+import { clamp, generateId, particleEulReul, type DomainResult } from './util';
 
 const BUILD_TIME_MINUTES = 45;
 const DEMOLISH_TIME_MINUTES = 20;
@@ -96,10 +96,10 @@ export function buildFacility(state: GameState, type: FacilityType, position: Gr
   const withDiary = pushDiaryEntry(
     nextState,
     getTimeOfDay(nextState.timeMinutes),
-    `오늘 옥상에 ${def.name}을(를) 설치했다.`,
+    `오늘 옥상에 ${def.name}${particleEulReul(def.name)} 설치했다.`,
     'build'
   );
-  return { ok: true, state: withDiary, message: `${def.name}을(를) 설치했다.` };
+  return { ok: true, state: withDiary, message: `${def.name}${particleEulReul(def.name)} 설치했다.` };
 }
 
 export function demolishFacility(state: GameState, facilityId: string): DomainResult {
@@ -122,10 +122,10 @@ export function demolishFacility(state: GameState, facilityId: string): DomainRe
   const withDiary = pushDiaryEntry(
     nextState,
     getTimeOfDay(nextState.timeMinutes),
-    `${def.name}을(를) 철거했다.`,
+    `${def.name}${particleEulReul(def.name)} 철거했다.`,
     'build'
   );
-  return { ok: true, state: withDiary, message: `${def.name}을(를) 철거하고 재료 일부를 돌려받았다.` };
+  return { ok: true, state: withDiary, message: `${def.name}${particleEulReul(def.name)} 철거하고 재료 일부를 돌려받았다.` };
 }
 
 export function tendGarden(state: GameState, facilityId: string): DomainResult {
