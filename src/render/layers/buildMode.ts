@@ -24,18 +24,19 @@ function getFacilityPreviewSprite(type: FacilityType): HTMLCanvasElement {
 
 export function drawBuildModeOverlay(ctx: CanvasRenderingContext2D, buildMode: BuildModeState): void {
   if (!buildMode.active) return;
-  const half = buildMode.cellPixelSize / 2;
 
   ctx.strokeStyle = 'rgba(255,255,255,0.22)';
   ctx.lineWidth = 1;
   for (const cell of buildMode.gridCells) {
-    ctx.strokeRect(cell.x - half, cell.y - half, buildMode.cellPixelSize, buildMode.cellPixelSize);
+    const half = cell.size / 2;
+    ctx.strokeRect(cell.x - half, cell.y - half, cell.size, cell.size);
   }
 
   if (buildMode.footprintCells.length > 0) {
     ctx.fillStyle = buildMode.validPlacement ? 'rgba(90, 200, 120, 0.45)' : 'rgba(220, 90, 90, 0.45)';
     for (const cell of buildMode.footprintCells) {
-      ctx.fillRect(cell.x - half, cell.y - half, buildMode.cellPixelSize, buildMode.cellPixelSize);
+      const half = cell.size / 2;
+      ctx.fillRect(cell.x - half, cell.y - half, cell.size, cell.size);
     }
   }
 

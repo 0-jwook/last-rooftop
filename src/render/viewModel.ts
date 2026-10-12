@@ -3,7 +3,7 @@ import { ROOFTOP_LAYOUT } from '../game/data/rooftop';
 import type { FacilityState as GameFacilityState, FacilityType as GameFacilityType, GameState, GridPosition } from '../game/state/types';
 import { lerp } from './colorMath';
 import { LOGICAL_W, ROOFTOP_BOTTOM, ROOFTOP_TOP, ROOFTOP_TOP_INSET } from './constants';
-import type { BuildModeState, RenderFacilityState, RenderFacilityInstance, WorldSnapshot } from './types';
+import type { BuildModeState, GridCellMarker, RenderFacilityState, RenderFacilityInstance, WorldSnapshot } from './types';
 
 export interface BuildModeUiState {
   active: boolean;
@@ -31,11 +31,10 @@ export function pixelToGridCell(px: number, py: number): GridPosition {
   return { x, y };
 }
 
-function cellPixelSizeEstimate(): number {
-  const midRow = Math.floor(ROOFTOP_LAYOUT.height / 2);
-  const a = gridCellToWorldPixel({ x: 0, y: midRow });
-  const b = gridCellToWorldPixel({ x: 1, y: midRow });
-  return Math.max(8, Math.abs(b.x - a.x));
+function cellWidthAtRow(gy: number): number {
+  const a = gridCellToWorldPixel({ x: 0, y: gy });
+  const b = gridCellToWorldPixel({ x: 1, y: gy });
+  return Math.max(6, Math.abs(b.x - a.x));
 }
 
 function facilityStateToRender(state: GameFacilityState): RenderFacilityState {
@@ -59,19 +58,24 @@ export function buildWorldSnapshot(state: GameState, buildModeUi: BuildModeUiSta
 
   let buildMode: BuildModeState | undefined;
   if (buildModeUi?.active) {
-    const gridCells: { x: number; y: number }[] = [];
+    const gridCells: GridCellMarker[] = [];
     for (let gy = 0; gy < ROOFTOP_LAYOUT.height; gy++) {
+      const size = cellWidthAtRow(gy);
       for (let gx = 0; gx < ROOFTOP_LAYOUT.width; gx++) {
         if (ROOFTOP_LAYOUT.blockedCells.some((blocked) => blocked.x === gx && blocked.y === gy)) continue;
-        gridCells.push(gridCellToWorldPixel({ x: gx, y: gy }));
+        const { x, y } = gridCellToWorldPixel({ x: gx, y: gy });
+        gridCells.push({ x, y, size });
       }
     }
 
-    let footprintCells: { x: number; y: number }[] = [];
+    let footprintCells: GridCellMarker[] = [];
     let validPlacement = false;
     if (buildModeUi.selectedType && buildModeUi.hoveredCell) {
       const footprint = getFootprintCells(buildModeUi.selectedType, buildModeUi.hoveredCell);
-      footprintCells = footprint.map(gridCellToWorldPixel);
+      footprintCells = footprint.map((cell) => {
+        const { x, y } = gridCellToWorldPixel(cell);
+        return { x, y, size: cellWidthAtRow(cell.y) };
+      });
       validPlacement = canPlaceFacility(state, buildModeUi.selectedType, buildModeUi.hoveredCell).valid;
     }
 
@@ -79,7 +83,6 @@ export function buildWorldSnapshot(state: GameState, buildModeUi: BuildModeUiSta
       active: true,
       selectedType: buildModeUi.selectedType,
       gridCells,
-      cellPixelSize: cellPixelSizeEstimate(),
       footprintCells,
       validPlacement,
     };

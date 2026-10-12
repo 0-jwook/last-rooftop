@@ -18,10 +18,10 @@ function fillRect(rows: string[], x0: number, y0: number, w: number, h: number, 
 }
 
 function buildTentSprite(): PixelSprite {
-  const width = 13;
-  const height = 8;
+  const width = 19;
+  const height = 11;
   const rows = emptyRows(width, height);
-  const apex = 6;
+  const apex = 9;
   for (let y = 0; y < height - 1; y++) {
     const left = apex - y;
     const right = apex + y;
@@ -32,7 +32,7 @@ function buildTentSprite(): PixelSprite {
   }
   const groundHalf = height - 2;
   fillRect(rows, apex - groundHalf, height - 1, groundHalf * 2 + 1, 1, 'e');
-  fillRect(rows, apex - 1, height - 3, 3, 2, 'd');
+  fillRect(rows, apex - 2, height - 4, 5, 3, 'd');
   return {
     width,
     height,
@@ -42,26 +42,26 @@ function buildTentSprite(): PixelSprite {
 }
 
 function buildGardenSprite(stage: 0 | 1 | 2 | 3): PixelSprite {
-  const width = 10;
-  const height = 10;
+  const width = 12;
+  const height = 11;
   const rows = emptyRows(width, height);
-  fillRect(rows, 0, 6, 10, 1, 'P');
-  fillRect(rows, 1, 7, 8, 3, 'p');
-  fillRect(rows, 1, 6, 8, 1, 's');
+  fillRect(rows, 0, 7, 12, 1, 'P');
+  fillRect(rows, 1, 8, 10, 3, 'p');
+  fillRect(rows, 1, 7, 10, 1, 's');
 
   if (stage >= 1) {
-    setPixel(rows, 4, 5, 'l');
-    setPixel(rows, 5, 5, 'l');
+    setPixel(rows, 5, 6, 'l');
+    setPixel(rows, 6, 6, 'l');
   }
   if (stage >= 2) {
-    fillRect(rows, 3, 3, 1, 3, 'g');
-    fillRect(rows, 6, 3, 1, 3, 'g');
-    fillRect(rows, 4, 2, 2, 2, 'l');
+    fillRect(rows, 4, 4, 1, 3, 'g');
+    fillRect(rows, 7, 4, 1, 3, 'g');
+    fillRect(rows, 5, 3, 2, 2, 'l');
   }
   if (stage >= 3) {
-    setPixel(rows, 3, 2, 'h');
-    setPixel(rows, 6, 2, 'h');
-    fillRect(rows, 4, 1, 2, 2, 'L');
+    setPixel(rows, 4, 3, 'h');
+    setPixel(rows, 7, 3, 'h');
+    fillRect(rows, 5, 2, 2, 2, 'L');
   }
 
   return {
@@ -80,8 +80,8 @@ function buildGardenSprite(stage: 0 | 1 | 2 | 3): PixelSprite {
   };
 }
 
-const RAIN_COLLECTOR_WIDTH = 10;
-const RAIN_COLLECTOR_HEIGHT = 12;
+const RAIN_COLLECTOR_WIDTH = 12;
+const RAIN_COLLECTOR_HEIGHT = 17;
 
 function buildRainCollectorShell(): PixelSprite {
   const rows = emptyRows(RAIN_COLLECTOR_WIDTH, RAIN_COLLECTOR_HEIGHT);
@@ -105,14 +105,14 @@ export const RAIN_COLLECTOR_INNER = {
 };
 
 function buildSolarPanelSprite(): PixelSprite {
-  const width = 14;
-  const height = 8;
+  const width = 20;
+  const height = 12;
   const rows = emptyRows(width, height);
-  fillRect(rows, 1, 0, 12, 5, 'c');
-  for (let x = 1; x < 13; x += 3) fillRect(rows, x, 0, 1, 5, 'g');
-  for (let y = 1; y < 5; y += 2) fillRect(rows, 1, y, 12, 1, 'g');
-  fillRect(rows, 0, 5, 14, 1, 'k');
-  fillRect(rows, 6, 5, 2, 3, 'k');
+  fillRect(rows, 1, 0, 18, 7, 'c');
+  for (let x = 1; x < 19; x += 4) fillRect(rows, x, 0, 1, 7, 'g');
+  for (let y = 1; y < 7; y += 2) fillRect(rows, 1, y, 18, 1, 'g');
+  fillRect(rows, 0, 7, 20, 1, 'k');
+  fillRect(rows, 8, 7, 4, 5, 'k');
   return {
     width,
     height,
@@ -122,12 +122,13 @@ function buildSolarPanelSprite(): PixelSprite {
 }
 
 function buildLampSprite(): PixelSprite {
-  const width = 6;
-  const height = 14;
+  const width = 8;
+  const height = 20;
   const rows = emptyRows(width, height);
-  fillRect(rows, 2, 3, 2, 10, 'm');
-  fillRect(rows, 1, 1, 4, 2, 'h');
-  fillRect(rows, 0, 0, 6, 1, 'k');
+  fillRect(rows, 3, 4, 2, 15, 'm');
+  fillRect(rows, 1, 1, 6, 3, 'h');
+  fillRect(rows, 0, 0, 8, 1, 'k');
+  fillRect(rows, 1, 18, 6, 1, 'k');
   return {
     width,
     height,

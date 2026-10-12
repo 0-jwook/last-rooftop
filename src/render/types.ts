@@ -15,12 +15,17 @@ export interface RenderFacilityInstance {
   state: RenderFacilityState;
 }
 
+export interface GridCellMarker {
+  x: number;
+  y: number;
+  size: number;
+}
+
 export interface BuildModeState {
   active: boolean;
   selectedType: FacilityType | null;
-  gridCells: { x: number; y: number }[];
-  cellPixelSize: number;
-  footprintCells: { x: number; y: number }[];
+  gridCells: GridCellMarker[];
+  footprintCells: GridCellMarker[];
   validPlacement: boolean;
 }
 
