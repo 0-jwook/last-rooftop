@@ -18,7 +18,7 @@ export function WorldCanvas({ snapshot, onCellHover, onCellLeave, onCellClick }:
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const snapshotRef = useRef(snapshot);
-  const startRef = useRef(performance.now());
+  const startRef = useRef(0);
   const frameRef = useRef(0);
 
   snapshotRef.current = snapshot;
@@ -28,6 +28,7 @@ export function WorldCanvas({ snapshot, onCellHover, onCellLeave, onCellClick }:
     if (!canvas) return;
 
     ctxRef.current = setupCanvas(canvas);
+    startRef.current = performance.now();
 
     const resizeObserver = new ResizeObserver(() => {
       if (canvasRef.current) ctxRef.current = setupCanvas(canvasRef.current);
