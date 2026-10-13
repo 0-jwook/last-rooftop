@@ -39,6 +39,8 @@ function cellWidthAtRow(gy: number): number {
 
 function facilityStateToRender(state: GameFacilityState): RenderFacilityState {
   switch (state.kind) {
+    case 'underConstruction':
+      return { underConstruction: true };
     case 'garden':
       return { growthStage: state.growthStage };
     case 'rainCollector':

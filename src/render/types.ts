@@ -5,6 +5,7 @@ export interface RenderFacilityState {
   growthStage?: 0 | 1 | 2 | 3;
   waterLevel?: number; // 0..1
   charge?: number; // 0..1
+  underConstruction?: boolean;
 }
 
 export interface RenderFacilityInstance {

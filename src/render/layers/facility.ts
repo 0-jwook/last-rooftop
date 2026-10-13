@@ -41,6 +41,9 @@ export function drawFacility(
   elapsedMs: number
 ): void {
   const scale = depthScale(facility.y);
+  const underConstruction = facility.state.underConstruction ?? false;
+  if (underConstruction) ctx.globalAlpha = 0.45;
+
   switch (facility.type) {
     case 'tent':
       drawAnchoredSprite(ctx, getTentSprite(), facility.x, facility.y, scale);
@@ -58,6 +61,8 @@ export function drawFacility(
       drawLamp(ctx, facility, time, scale, elapsedMs);
       break;
   }
+
+  if (underConstruction) ctx.globalAlpha = 1;
 }
 
 function drawRainCollector(
