@@ -6,6 +6,7 @@ import { buildWorldSnapshot, type BuildModeUiState } from '../../render/viewMode
 import { ActionPanel } from '../actions/ActionPanel';
 import type { BuildModeState } from '../actions/BuildPanel';
 import { Toast } from '../common/Toast';
+import { EventModal } from '../events/EventModal';
 import { StatusPanel } from '../status/StatusPanel';
 import styles from './AppLayout.module.css';
 
@@ -54,6 +55,8 @@ export function AppLayout() {
       <aside className={`${styles.right} ${rightOpen ? styles.open : ''}`}>
         <ActionPanel buildMode={buildMode} onBuildModeChange={setBuildMode} hoveredCell={hoveredCell} />
       </aside>
+
+      <EventModal />
     </div>
   );
 }

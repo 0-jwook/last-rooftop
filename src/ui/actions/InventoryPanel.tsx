@@ -51,6 +51,9 @@ export function InventoryPanel() {
               <li key={facility.id} className={styles.facilityItem}>
                 <div>
                   <span className={styles.facilityName}>{def.name}</span>
+                  {facility.state.kind === 'underConstruction' && (
+                    <span className={styles.facilityMeta}>공사 중 (DAY {facility.state.completesOnDay}에 완성)</span>
+                  )}
                   {facility.state.kind === 'garden' && (
                     <span className={styles.facilityMeta}>성장 단계 {facility.state.growthStage}/3</span>
                   )}

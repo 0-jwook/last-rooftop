@@ -3,11 +3,9 @@ import type { FacilityType, GridPosition } from '../../game/state/types';
 import styles from './ActionPanel.module.css';
 import { BuildPanel, type BuildModeState } from './BuildPanel';
 import { DiaryPanel } from './DiaryPanel';
-import { ExplorePanel } from './ExplorePanel';
 import { InventoryPanel } from './InventoryPanel';
-import { LifePanel } from './LifePanel';
 
-type Tab = 'explore' | 'build' | 'life' | 'inventory' | 'diary';
+type Tab = 'build' | 'inventory' | 'diary';
 
 interface ActionPanelProps {
   buildMode: BuildModeState;
@@ -16,15 +14,13 @@ interface ActionPanelProps {
 }
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'explore', label: '탐사' },
   { id: 'build', label: '건설' },
-  { id: 'life', label: '생활' },
   { id: 'inventory', label: '물자' },
   { id: 'diary', label: '일기' },
 ];
 
 export function ActionPanel({ buildMode, onBuildModeChange, hoveredCell }: ActionPanelProps) {
-  const [tab, setTab] = useState<Tab>('explore');
+  const [tab, setTab] = useState<Tab>('build');
 
   function selectTab(next: Tab) {
     setTab(next);
@@ -47,11 +43,9 @@ export function ActionPanel({ buildMode, onBuildModeChange, hoveredCell }: Actio
         ))}
       </nav>
       <div className={styles.content}>
-        {tab === 'explore' && <ExplorePanel />}
         {tab === 'build' && (
           <BuildPanel buildMode={buildMode} onBuildModeChange={onBuildModeChange} hoveredCell={hoveredCell} />
         )}
-        {tab === 'life' && <LifePanel />}
         {tab === 'inventory' && <InventoryPanel />}
         {tab === 'diary' && <DiaryPanel />}
       </div>
