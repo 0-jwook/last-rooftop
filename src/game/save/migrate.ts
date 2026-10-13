@@ -1,14 +1,6 @@
 import { clamp } from '../domain/util';
 import { createInitialState } from '../state/initialState';
-import type {
-  DiaryEntry,
-  FacilityInstance,
-  GameState,
-  Inventory,
-  LocationProgress,
-  SurvivalStats,
-  Weather,
-} from '../state/types';
+import type { DiaryEntry, FacilityInstance, GameState, Inventory, PendingEvent, SurvivalStats, Weather } from '../state/types';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -16,10 +8,6 @@ function isObject(value: unknown): value is Record<string, unknown> {
 
 function num(value: unknown, fallback: number): number {
   return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
-}
-
-function str(value: unknown, fallback: string): string {
-  return typeof value === 'string' ? value : fallback;
 }
 
 function mergeStats(raw: unknown, fallback: SurvivalStats): SurvivalStats {
@@ -49,26 +37,22 @@ function mergeFacilities(raw: unknown): FacilityInstance[] {
   );
 }
 
-function mergeLocations(raw: unknown): Record<string, LocationProgress> {
-  if (!isObject(raw)) return {};
-  const result: Record<string, LocationProgress> = {};
-  for (const [key, value] of Object.entries(raw)) {
-    if (!isObject(value)) continue;
-    result[key] = {
-      locationId: str(value.locationId, key),
-      unlocked: Boolean(value.unlocked),
-      visitCount: Math.max(0, Math.trunc(num(value.visitCount, 0))),
-      completedEventIds: Array.isArray(value.completedEventIds)
-        ? value.completedEventIds.filter((id): id is string => typeof id === 'string')
-        : [],
-    };
-  }
-  return result;
-}
-
 function mergeDiary(raw: unknown): DiaryEntry[] {
   if (!Array.isArray(raw)) return [];
   return raw.filter((d): d is DiaryEntry => isObject(d) && typeof d.id === 'string' && typeof d.text === 'string');
+}
+
+function mergePendingEvent(raw: unknown): PendingEvent | null {
+  if (!isObject(raw)) return null;
+  if (raw.type === 'explore_invite') {
+    const locationChoices = Array.isArray(raw.locationChoices)
+      ? raw.locationChoices.filter((id): id is string => typeof id === 'string')
+      : [];
+    return locationChoices.length > 0 ? { type: 'explore_invite', locationChoices } : null;
+  }
+  if (raw.type === 'survivor_visit') return { type: 'survivor_visit' };
+  if (raw.type === 'zombie_disguise') return { type: 'zombie_disguise' };
+  return null;
 }
 
 export function migrateSave(raw: unknown): GameState {
@@ -87,9 +71,9 @@ export function migrateSave(raw: unknown): GameState {
     stats: mergeStats(payload.stats, fallback.stats),
     inventory: mergeInventory(payload.inventory, fallback.inventory),
     facilities: mergeFacilities(payload.facilities),
-    locations: mergeLocations(payload.locations),
     diary: mergeDiary(payload.diary),
     isGameOver: Boolean(payload.isGameOver),
     lastMessage: null,
+    pendingEvent: mergePendingEvent(payload.pendingEvent),
   };
 }

@@ -10,6 +10,7 @@ export interface GridPosition {
 }
 
 export type FacilityState =
+  | { kind: 'underConstruction'; targetType: FacilityType; completesOnDay: number }
   | { kind: 'tent' }
   | { kind: 'garden'; growthStage: 0 | 1 | 2 | 3; lastTendedDay: number | null }
   | { kind: 'rainCollector'; waterLevel: number; capacity: number }
@@ -41,25 +42,33 @@ export interface Inventory {
   battery: number;
 }
 
-export interface LocationProgress {
-  locationId: string;
-  unlocked: boolean;
-  visitCount: number;
-  completedEventIds: string[];
-}
-
 export interface DiaryEntry {
   id: string;
   day: number;
   timeOfDay: TimeOfDay;
   text: string;
-  tag?: 'explore' | 'build' | 'survival' | 'milestone';
+  tag?: 'explore' | 'build' | 'survival' | 'milestone' | 'ambient';
 }
 
 export interface LastMessage {
   text: string;
   kind: 'success' | 'error';
 }
+
+export interface ExploreInviteEvent {
+  type: 'explore_invite';
+  locationChoices: string[];
+}
+
+export interface SurvivorVisitEvent {
+  type: 'survivor_visit';
+}
+
+export interface ZombieDisguiseEvent {
+  type: 'zombie_disguise';
+}
+
+export type PendingEvent = ExploreInviteEvent | SurvivorVisitEvent | ZombieDisguiseEvent;
 
 export interface GameState {
   saveVersion: number;
@@ -69,8 +78,8 @@ export interface GameState {
   stats: SurvivalStats;
   inventory: Inventory;
   facilities: FacilityInstance[];
-  locations: Record<string, LocationProgress>;
   diary: DiaryEntry[];
   isGameOver: boolean;
   lastMessage: LastMessage | null;
+  pendingEvent: PendingEvent | null;
 }

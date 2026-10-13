@@ -17,9 +17,9 @@ export function saveGame(state: GameState): boolean {
         stats: state.stats,
         inventory: state.inventory,
         facilities: state.facilities,
-        locations: state.locations,
         diary: state.diary,
         isGameOver: state.isGameOver,
+        pendingEvent: state.pendingEvent,
       },
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(payload));

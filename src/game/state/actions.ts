@@ -1,14 +1,12 @@
 import type { FacilityType, GridPosition } from './types';
 
 export type GameAction =
-  | { type: 'ADVANCE_TIME'; minutes: number }
-  | { type: 'SLEEP' }
-  | { type: 'EAT' }
-  | { type: 'DRINK' }
-  | { type: 'EXPLORE'; locationId: string; eventId: string; choiceId: string }
+  | { type: 'TICK'; minutes: number }
   | { type: 'BUILD_FACILITY'; facilityType: FacilityType; position: GridPosition }
   | { type: 'DEMOLISH_FACILITY'; facilityId: string }
   | { type: 'TEND_GARDEN'; facilityId: string }
-  | { type: 'CLEAN_ROOFTOP' }
-  | { type: 'REST_IDLE'; minutes: number }
+  | { type: 'RESOLVE_EXPLORE_CHOICE'; locationId: string }
+  | { type: 'DECLINE_EXPLORE_INVITE' }
+  | { type: 'RESOLVE_SURVIVOR_VISIT'; accept: boolean }
+  | { type: 'RESOLVE_ZOMBIE_DISGUISE'; letIn: boolean }
   | { type: 'NEW_GAME' };

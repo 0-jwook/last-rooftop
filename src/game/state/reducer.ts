@@ -1,34 +1,34 @@
-import { buildFacility, cleanRooftop, demolishFacility, tendGarden } from '../domain/facilities';
-import { exploreLocation } from '../domain/exploration';
-import { drinkWater, eatFood } from '../domain/survival';
-import { advanceTime, sleep } from '../domain/time';
+import type { GameAction } from './actions';
+import { buildFacility, demolishFacility, tendGarden } from '../domain/facilities';
+import {
+  declineExploreInvite,
+  resolveExploreChoice,
+  resolveSurvivorVisit,
+  resolveZombieDisguise,
+} from '../domain/events';
+import { applyTick } from '../domain/tick';
 import type { DomainResult } from '../domain/util';
 import { createInitialState } from './initialState';
-import type { GameAction } from './actions';
 import type { GameState } from './types';
 
 function dispatchDomain(state: GameState, action: GameAction): DomainResult {
   switch (action.type) {
-    case 'ADVANCE_TIME':
-      return { ok: true, state: advanceTime(state, action.minutes), message: '' };
-    case 'SLEEP':
-      return sleep(state);
-    case 'EAT':
-      return eatFood(state);
-    case 'DRINK':
-      return drinkWater(state);
-    case 'EXPLORE':
-      return exploreLocation(state, action.locationId, action.eventId, action.choiceId);
+    case 'TICK':
+      return { ok: true, state: applyTick(state, action.minutes), message: '' };
     case 'BUILD_FACILITY':
       return buildFacility(state, action.facilityType, action.position);
     case 'DEMOLISH_FACILITY':
       return demolishFacility(state, action.facilityId);
     case 'TEND_GARDEN':
       return tendGarden(state, action.facilityId);
-    case 'CLEAN_ROOFTOP':
-      return cleanRooftop(state);
-    case 'REST_IDLE':
-      return { ok: true, state: advanceTime(state, action.minutes), message: '시간을 보냈다.' };
+    case 'RESOLVE_EXPLORE_CHOICE':
+      return resolveExploreChoice(state, action.locationId);
+    case 'DECLINE_EXPLORE_INVITE':
+      return declineExploreInvite(state);
+    case 'RESOLVE_SURVIVOR_VISIT':
+      return resolveSurvivorVisit(state, action.accept);
+    case 'RESOLVE_ZOMBIE_DISGUISE':
+      return resolveZombieDisguise(state, action.letIn);
     case 'NEW_GAME':
       return { ok: true, state: createInitialState(), message: '새 게임을 시작했다.' };
   }

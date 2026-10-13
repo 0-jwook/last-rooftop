@@ -4,14 +4,21 @@ import type { FacilityInstance, FacilityState, FacilityType, GameState, GridPosi
 import { pushDiaryEntry } from './diary';
 import { addResources, canAfford, deductResources } from './inventory';
 import { advanceTime, getTimeOfDay } from './time';
-import { clamp, generateId, particleEulReul, type DomainResult } from './util';
+import { generateId, particleEulReul, type DomainResult } from './util';
 
 const BUILD_TIME_MINUTES = 45;
 const DEMOLISH_TIME_MINUTES = 20;
 const TEND_TIME_MINUTES = 20;
-const CLEAN_TIME_MINUTES = 30;
 const GARDEN_MAX_STAGE = 3;
 const GARDEN_HARVEST_YIELD: Partial<Inventory> = { food: 3, seeds: 1 };
+
+const BUILD_DURATION_DAYS: Record<FacilityType, number> = {
+  garden: 1,
+  lamp: 1,
+  rainCollector: 1,
+  tent: 2,
+  solarPanel: 3,
+};
 
 export function getFootprintCells(type: FacilityType, position: GridPosition): GridPosition[] {
   return FACILITY_CATALOG[type].footprint.map((offset) => ({
@@ -81,12 +88,13 @@ export function buildFacility(state: GameState, type: FacilityType, position: Gr
   }
 
   const advanced = advanceTime(state, BUILD_TIME_MINUTES);
+  const durationDays = BUILD_DURATION_DAYS[type];
   const facility: FacilityInstance = {
     id: generateId(),
     type,
     position,
     builtOnDay: advanced.day,
-    state: createInitialFacilityState(type),
+    state: { kind: 'underConstruction', targetType: type, completesOnDay: advanced.day + durationDays },
   };
   const nextState: GameState = {
     ...advanced,
@@ -96,10 +104,42 @@ export function buildFacility(state: GameState, type: FacilityType, position: Gr
   const withDiary = pushDiaryEntry(
     nextState,
     getTimeOfDay(nextState.timeMinutes),
-    `오늘 옥상에 ${def.name}${particleEulReul(def.name)} 설치했다.`,
+    `오늘 옥상에 ${def.name} 공사를 시작했다.`,
     'build'
   );
-  return { ok: true, state: withDiary, message: `${def.name}${particleEulReul(def.name)} 설치했다.` };
+  return {
+    ok: true,
+    state: withDiary,
+    message: `공사를 시작했다. ${durationDays}일 후 ${def.name}${particleEulReul(def.name)} 완성된다.`,
+  };
+}
+
+export function completeConstructions(state: GameState): GameState {
+  let nextState = state;
+  let changed = false;
+  const facilities = nextState.facilities.map((facility) => {
+    if (facility.state.kind !== 'underConstruction' || facility.state.completesOnDay > nextState.day) {
+      return facility;
+    }
+    changed = true;
+    return { ...facility, state: createInitialFacilityState(facility.state.targetType) };
+  });
+  if (!changed) return state;
+
+  nextState = { ...nextState, facilities };
+  for (const facility of facilities) {
+    const wasUnderConstruction = state.facilities.find((f) => f.id === facility.id)?.state.kind === 'underConstruction';
+    if (wasUnderConstruction && facility.state.kind !== 'underConstruction') {
+      const def = FACILITY_CATALOG[facility.type];
+      nextState = pushDiaryEntry(
+        nextState,
+        getTimeOfDay(nextState.timeMinutes),
+        `공사하던 ${def.name}${particleEulReul(def.name)} 완성됐다.`,
+        'build'
+      );
+    }
+  }
+  return nextState;
 }
 
 export function demolishFacility(state: GameState, facilityId: string): DomainResult {
@@ -172,19 +212,4 @@ export function tendGarden(state: GameState, facilityId: string): DomainResult {
         : '텃밭의 작물이 수확할 수 있을 만큼 자랐다.';
   const withDiary = pushDiaryEntry(nextState, getTimeOfDay(nextState.timeMinutes), diaryText, 'survival');
   return { ok: true, state: withDiary, message };
-}
-
-export function cleanRooftop(state: GameState): DomainResult {
-  const advanced = advanceTime(state, CLEAN_TIME_MINUTES);
-  const nextState: GameState = {
-    ...advanced,
-    stats: { ...advanced.stats, fatigue: clamp(advanced.stats.fatigue + 5, 0, 100) },
-  };
-  const withDiary = pushDiaryEntry(
-    nextState,
-    getTimeOfDay(nextState.timeMinutes),
-    '옥상을 정리했다. 조금씩 내 공간다워진다.',
-    'survival'
-  );
-  return { ok: true, state: withDiary, message: '옥상을 정리했다.' };
 }

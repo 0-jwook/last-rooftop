@@ -1,9 +1,14 @@
 import { createContext, useContext, useEffect, useReducer, type Dispatch, type ReactNode } from 'react';
+import { MINUTES_PER_DAY } from '../game/domain/time';
 import { loadGame, saveGame } from '../game/save/storage';
 import type { GameAction } from '../game/state/actions';
 import { createInitialState } from '../game/state/initialState';
 import { gameReducer } from '../game/state/reducer';
 import type { GameState } from '../game/state/types';
+
+const REAL_SECONDS_PER_GAME_DAY = 90;
+const TICK_INTERVAL_MS = 1000;
+const GAME_MINUTES_PER_TICK = MINUTES_PER_DAY / REAL_SECONDS_PER_GAME_DAY;
 
 interface GameContextValue {
   state: GameState;
@@ -22,6 +27,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     saveGame(state);
   }, [state]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (document.hidden) return;
+      dispatch({ type: 'TICK', minutes: GAME_MINUTES_PER_TICK });
+    }, TICK_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, []);
 
   return <GameContext.Provider value={{ state, dispatch }}>{children}</GameContext.Provider>;
 }

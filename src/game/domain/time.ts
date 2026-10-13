@@ -1,17 +1,17 @@
 import type { GameState, SurvivalStats, TimeOfDay } from '../state/types';
-import { pushDiaryEntry } from './diary';
-import { clamp, type DomainResult } from './util';
+import { clamp } from './util';
 
 export const MINUTES_PER_DAY = 1440;
-export const WAKE_MINUTES = 6 * 60;
 
 const HUNGER_RATE_PER_MIN = 100 / 1440; // 24시간이면 포만 -> 기아
 const THIRST_RATE_PER_MIN = 100 / 1200; // 20시간이면 갈증 최대
 const FATIGUE_RATE_PER_MIN = 100 / 1080; // 18시간 활동이면 피로 최대
 const STARVING_HEALTH_LOSS_PER_MIN = 100 / 1440; // 완전히 굶은 채 24시간이면 체력 소진
 const DEHYDRATED_HEALTH_LOSS_PER_MIN = 100 / 960; // 완전히 탈수된 채 16시간이면 체력 소진
-const SLEEP_DURATION_MINUTES = 480;
-const SLEEP_FATIGUE_RECOVERY = 90;
+
+const NIGHT_REST_START_HOUR = 0;
+const NIGHT_REST_END_HOUR = 6;
+const NIGHT_REST_RECOVERY_PER_MIN = 100 / 240; // 심야 시간대 4시간이면 피로 완전 회복
 
 export function getTimeOfDay(minutes: number): TimeOfDay {
   const m = ((minutes % MINUTES_PER_DAY) + MINUTES_PER_DAY) % MINUTES_PER_DAY;
@@ -47,23 +47,12 @@ export function advanceTime(state: GameState, minutes: number): GameState {
   };
 }
 
-export function restIdle(state: GameState, minutes: number): DomainResult {
-  return { ok: true, state: advanceTime(state, minutes), message: '시간을 보냈다.' };
-}
-
-export function sleep(state: GameState): DomainResult {
-  const statsAfterNight = applyPassiveDrain(state.stats, SLEEP_DURATION_MINUTES);
-  const stats: SurvivalStats = {
-    ...statsAfterNight,
-    fatigue: clamp(statsAfterNight.fatigue - SLEEP_FATIGUE_RECOVERY, 0, 100),
-  };
-  const nextState: GameState = {
+/** 심야 시간대(00:00~06:00)에는 캐릭터가 알아서 쉬며 피로가 자동으로 회복된다. */
+export function applyNightRecovery(state: GameState, minutes: number): GameState {
+  const hour = state.timeMinutes / 60;
+  if (hour < NIGHT_REST_START_HOUR || hour >= NIGHT_REST_END_HOUR) return state;
+  return {
     ...state,
-    day: state.day + 1,
-    timeMinutes: WAKE_MINUTES,
-    stats,
-    isGameOver: stats.health <= 0,
+    stats: { ...state.stats, fatigue: clamp(state.stats.fatigue - minutes * NIGHT_REST_RECOVERY_PER_MIN, 0, 100) },
   };
-  const withDiary = pushDiaryEntry(nextState, 'dawn', '하룻밤을 자고 새로운 아침을 맞았다.', 'survival');
-  return { ok: true, state: withDiary, message: '잠을 자고 다음 날 아침이 되었다.' };
 }
